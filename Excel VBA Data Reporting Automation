@@ -1,0 +1,47 @@
+Sub reporting()
+
+Dim lr#
+lr = Range("A1").End(xlDown).Row
+Dim mainsht As Worksheet
+
+Set mainsht = Worksheets("YR2YRSALE")
+Dim tempsht As Worksheet
+Dim totalprod As Integer
+
+Range("h1") = "mmm"
+For j = 2 To lr
+    Cells(j, "H") = Left(Cells(j, "E"), 3)
+Next j
+
+Range("c1:c" & lr).Copy
+Set tempsht = Worksheets.Add
+Range("A1").PasteSpecial
+Range("A1:A" & lr).RemoveDuplicates Columns:=1, Header:=xlYes
+
+mainsht.Activate
+Range("g1:g" & lr).Copy
+tempsht.Activate
+Range("c1").PasteSpecial
+Range("c1:c" & lr).RemoveDuplicates Columns:=1, Header:=xlYes
+
+totalprod = Range("A1").End(xlDown).Row
+
+For i = 2 To Range("c1").End(xlDown).Row
+    tempsht.Activate
+    Range(Range("A1"), Range("A1" & lr)).Copy
+    Worksheets.Add.Name = Range("C" & i)
+    Range("A1").PasteSpecial
+    Range("A1:a" & lr).Columns.AutoFit
+Range("b1") = "jan": Range("c1") = "feb": Range("d1") = "mar":
+Range("e1") = "apr": Range("f1") = "may": Range("g1") = "jun":
+Range("h1") = "jul": Range("i1") = "aug": Range("j1") = "sep":
+Range("k1") = "oct": Range("L1") = "nov": Range("M1") = "dec":
+
+For K = 2 To totalprod
+ For L = 2 To 13
+Cells(K, L) = WorksheetFunction.SumIfs(mainsht.Range("f2:f" & lr), mainsht.Range("h2:h" & lr), _
+    Cells(1, L), mainsht.Range("c2:c" & lr), Cells(K, 1), mainsht.Range("G2:G" & lr), tempsht.Range("C" & i))
+  Next L
+ Next K
+Next i
+End Sub
